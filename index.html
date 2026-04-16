@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Ball Runner 3D</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader-ball"></div>
+            <h1>Ball Runner 3D</h1>
+            <div class="loader-bar">
+                <div class="loader-fill" id="loader-fill"></div>
+            </div>
+            <p id="loading-text">Yükleniyor...</p>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="main-menu" style="display:none;">
+        <div class="menu-bg-canvas" id="menu-bg"></div>
+        <div class="menu-container">
+            <h1 class="game-title">
+                <span class="title-ball">●</span> Ball Runner 3D
+            </h1>
+            <div class="menu-card">
+                <div class="input-group">
+                    <label for="player-name">Oyuncu Adı</label>
+                    <input type="text" id="player-name" placeholder="Adını gir..." maxlength="15" autocomplete="off">
+                </div>
+                <div class="level-select">
+                    <h3>Level Seç</h3>
+                    <div class="level-buttons">
+                        <button class="level-btn" data-level="1">
+                            <div class="level-icon forest">🌲</div>
+                            <span>Orman</span>
+                            <small>Kolay</small>
+                        </button>
+                        <button class="level-btn" data-level="2">
+                            <div class="level-icon space">🌌</div>
+                            <span>Uzay</span>
+                            <small>Orta</small>
+                        </button>
+                        <button class="level-btn" data-level="3">
+                            <div class="level-icon lava">🌋</div>
+                            <span>Lav</span>
+                            <small>Zor</small>
+                        </button>
+                    </div>
+                </div>
+                <button class="play-btn" id="play-btn">OYNA</button>
+                <button class="leaderboard-btn" id="show-leaderboard">Skor Tablosu</button>
+            </div>
+            <div class="controls-info">
+                <p><kbd>WASD</kbd> / <kbd>↑↓←→</kbd> Hareket &nbsp;|&nbsp; <kbd>Fare</kbd> Platform Eğme &nbsp;|&nbsp; <kbd>Space</kbd> Zıpla &nbsp;|&nbsp; <kbd>ESC</kbd> Duraklat</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud" style="display:none;">
+        <div class="hud-top">
+            <div class="hud-score">
+                <span class="hud-label">SKOR</span>
+                <span class="hud-value" id="hud-score">0</span>
+            </div>
+            <div class="hud-combo" id="hud-combo" style="display:none;">
+                <span class="combo-text">COMBO x<span id="combo-value">1</span></span>
+            </div>
+            <div class="hud-lives">
+                <span class="hud-label">CAN</span>
+                <span id="hud-lives">❤️❤️❤️</span>
+            </div>
+        </div>
+        <div class="hud-powerup" id="hud-powerup" style="display:none;">
+            <div class="powerup-icon" id="powerup-icon"></div>
+            <div class="powerup-bar">
+                <div class="powerup-fill" id="powerup-fill"></div>
+            </div>
+        </div>
+        <div class="hud-distance">
+            <span id="hud-distance">0</span>m
+        </div>
+        <!-- Checkpoint göstergesi -->
+        <div class="hud-checkpoint" id="hud-checkpoint" style="display:none;">
+            <span id="checkpoint-text">✓ Checkpoint</span>
+        </div>
+        <!-- Minimap -->
+        <canvas id="minimap" width="180" height="180"></canvas>
+    </div>
+
+    <!-- Pause Menu -->
+    <div id="pause-menu" style="display:none;">
+        <div class="pause-overlay">
+            <div class="pause-card">
+                <h2>DURAKLATILDI</h2>
+                <button class="menu-action-btn" id="resume-btn">Devam Et</button>
+                <button class="menu-action-btn" id="restart-btn">Yeniden Başla</button>
+                <div class="pause-audio-btns">
+                    <button class="menu-action-btn audio-btn" id="toggle-sound-btn">🔊 Ses: Açık</button>
+                    <button class="menu-action-btn audio-btn" id="toggle-music-btn">🎵 Müzik: Açık</button>
+                </div>
+                <button class="menu-action-btn" id="quit-btn">Ana Menü</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="gameover-screen" style="display:none;">
+        <div class="gameover-overlay">
+            <div class="gameover-card">
+                <h2>OYUN BİTTİ</h2>
+                <div class="gameover-stats">
+                    <div class="stat-row">
+                        <span>Skor</span>
+                        <span id="final-score">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Mesafe</span>
+                        <span id="final-distance">0m</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Maks Combo</span>
+                        <span id="final-combo">x1</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Coinler</span>
+                        <span id="final-coins">0</span>
+                    </div>
+                </div>
+                <div class="gameover-rank" id="gameover-rank" style="display:none;">
+                    <span>🏆 Yeni Rekor! Sıra: #<span id="rank-number">1</span></span>
+                </div>
+                <button class="menu-action-btn play-again" id="play-again-btn">Tekrar Oyna</button>
+                <button class="menu-action-btn" id="gameover-menu-btn">Ana Menü</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level Complete -->
+    <div id="level-complete" style="display:none;">
+        <div class="gameover-overlay">
+            <div class="gameover-card level-complete-card">
+                <h2>LEVEL TAMAMLANDI! 🎉</h2>
+                <div class="gameover-stats">
+                    <div class="stat-row">
+                        <span>Skor</span>
+                        <span id="lc-score">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Zaman Bonusu</span>
+                        <span id="lc-time-bonus">+0</span>
+                    </div>
+                    <div class="stat-row total">
+                        <span>Toplam</span>
+                        <span id="lc-total">0</span>
+                    </div>
+                </div>
+                <button class="menu-action-btn play-again" id="next-level-btn">Sonraki Level</button>
+                <button class="menu-action-btn" id="lc-menu-btn">Ana Menü</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboard-modal" style="display:none;">
+        <div class="pause-overlay">
+            <div class="leaderboard-card">
+                <h2>🏆 Skor Tablosu</h2>
+                <div class="leaderboard-tabs">
+                    <button class="lb-tab active" data-level="all">Tümü</button>
+                    <button class="lb-tab" data-level="1">Orman</button>
+                    <button class="lb-tab" data-level="2">Uzay</button>
+                    <button class="lb-tab" data-level="3">Lav</button>
+                </div>
+                <div class="leaderboard-list" id="leaderboard-list"></div>
+                <button class="menu-action-btn" id="close-leaderboard">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div id="mobile-controls" style="display:none;">
+        <div class="joystick-container" id="joystick-zone">
+            <div class="joystick-base">
+                <div class="joystick-stick" id="joystick-stick"></div>
+            </div>
+        </div>
+        <button class="mobile-jump-btn" id="mobile-jump">⬆</button>
+        <button class="mobile-pause-btn" id="mobile-pause">⏸</button>
+    </div>
+
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/obstacles.js"></script>
+    <script src="js/powerups.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/minimap.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
