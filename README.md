@@ -7,7 +7,7 @@ Oyuncu; engelleri aşar, coin toplar, güçlendirmeleri kullanır ve bölümleri
 
 ## 🚀 Proje Hakkında
 
-Bu proje, ders kapsamında hazırlanmış bir **vize/final oyun projesidir**.  
+  
 Sadece basit bir hareket sistemi değil; farklı oyun mekanikleri, kullanıcı arayüzleri ve modüler JavaScript yapısıyla daha kapsamlı bir oyun deneyimi sunmayı hedefler.
 
 Oyunun temel amacı:
